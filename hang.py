@@ -32,10 +32,16 @@ def printLoadSituation(wordlist):
     print "Press \033[91mENTER\033[0m to start"
     raw_input()
 
+
+def calculateDifferentLetters(secretWord):
+    repetitions = set(secretWord)
+    return len(repetitions)
+
 def printWelcomeMessage(secretWord):
     system("clear")
     print '\033[91mWelcome to the game, Hangam!\033[0m'
-    print '\033[91mI am thinking of a word that is', len(secretWord), ' letters long.\033[0m'
+    print '\033[91mI am thinking of a word that is\033[33m', len(secretWord), '\033[0m\033[91mletters long.\033[0m'
+    print '\033[91mThe word has\033[33m', calculateDifferentLetters(secretWord),'\033[0m\033[91mdifferent letters.\033[0m'
     print '-------------'
 
 def isWordGuessed(secretWord, lettersGuessed):
@@ -96,10 +102,30 @@ def printResult(secretWord, lettersGuessed):
         print 'The word was \033[45m', secretWord, '\033[0m.'
         print '===================================================================='
 
+def validateOption(option):
+    while option != 'y' and option != 'n':
+        print 'Invalid character! Try again'
+        option = raw_input()
+
+def chooseAnotherWord(secretWord):
+    guesses = 8
+    if guesses < calculateDifferentLetters(secretWord):
+        system("clear")
+        print '\033[33mWARNING!\033[0m'
+        print 'In the word drawn'
+        print 'The number of different letters is higher than the number of guesses'
+        print'Do you want to change the word ? [y/n]'
+        option = raw_input()
+        validateOption(option)
+        if option == 'y':
+            return 1
+        return 2
+    return 0
 
 def hangman(secretWord):
     guesses = 8
     lettersGuessed = []
+
     while  isWordGuessed(secretWord, lettersGuessed) == False and guesses > 0:
         print 'You have ', guesses, 'guesses left.'
 
@@ -136,5 +162,7 @@ line = readArchive(inFile)
 wordlist = makeListOfWords(line)
 printLoadSituation(wordlist)
 secretWord = chooseWord(wordlist).lower()
+while chooseAnotherWord(secretWord) == 1:
+    secretWord = chooseWord(wordlist).lower()
 printWelcomeMessage(secretWord)
 hangman(secretWord)

@@ -4,7 +4,7 @@ import string
 import time
 from os import system
 
-WORDLIST_FILENAME = "palavras.txt"
+WORDLIST_FILENAME = "words.txt"
 
 class Archive:
     fileName = ''
@@ -18,7 +18,6 @@ class Archive:
 
     def openArchive(self):
         self.inFile = open(self.fileName, 'r', 0)
-        return self.inFile
 
     def readArchive(self):
         self.line = self.inFile.readline()
@@ -29,15 +28,15 @@ class Archive:
         take a while to finish.
         """
         self.wordlist = string.split(self.line)
-        return self.wordlist
 
-    def calculateLength(self):
+    def calculateLengthOfWordlist(self):
         self.length = len(self.wordlist)
 
 class Word():
 
     secretWord = ''
     numberDifferentLetters = 0
+    option = ''
 
     def chooseWord(self, wordlist):
         self.secretWord = random.choice(wordlist).lower()
@@ -45,7 +44,27 @@ class Word():
     def calculateDifferentLetters(self):
         repetitions = set(self.secretWord)
         self.numberDifferentLetters = len(repetitions)
-        print self.numberDifferentLetters
+
+    def chooseAnotherWord(self):
+        guesses = 8
+        if guesses < self.numberDifferentLetters:
+            system("clear")
+            print '\033[33mWARNING!\033[0m'
+            print 'In the word drawn'
+            print 'The number of different letters is higher than the number of guesses'
+            print '\033[92mIf you would like to change, sometimes you will have to press yes more than once until the system draw a word that fits\033[0m'
+            print'Do you want to change the word ? [y/n]'
+            self.option = raw_input()
+            self.validateOption()
+            if self.option == 'y':
+                return 1
+            return 2
+        return 0
+
+    def validateOption(self):
+        while self.option != 'y' and self.option != 'n':
+            print 'Invalid character! Try again'
+            self.option = raw_input()
 
 def printLoadSituation(lenWordlist):
     print "Loading word list from file... Wait a few seconds, please"
@@ -60,15 +79,14 @@ def printWelcomeMessage(secretWord, numberDifferentLetters):
     print '\033[91mI am thinking of a word that is\033[33m', len(secretWord), '\033[0m\033[91mletters long.\033[0m'
     print '\033[91mThe word has\033[33m', numberDifferentLetters,'\033[0m\033[91mdifferent letters.\033[0m'
     print '-------------'
+    print 'Lets get started...'
+    print'\033[91m3\033[0m'
+    time.sleep(1)
+    print '\033[33m2\033[0m'
+    time.sleep(1)
+    print '1'
 
 def isWordGuessed(secretWord, lettersGuessed):
-    secretLetters = []
-
-#    for letter in secretWord:
-#        if letter in secretLetters:
-#            secretLetters.append(letter)
-#        else:
-#            pass
 
     for letter in secretWord:
         if letter in lettersGuessed:
@@ -104,7 +122,7 @@ def processGuess(string, lettersGuessed, secretWord):
         else:
             guessed += ' _ '
     print string, guessed
-    print '------------'
+    print '====================================================================='
 
 def printResult(secretWord, lettersGuessed):
     system("clear")
@@ -119,25 +137,6 @@ def printResult(secretWord, lettersGuessed):
         print 'The word was \033[45m', secretWord, '\033[0m.'
         print '===================================================================='
 
-def validateOption(option):
-    while option != 'y' and option != 'n':
-        print 'Invalid character! Try again'
-        option = raw_input()
-
-def chooseAnotherWord(secretWord, numberDifferentLetters):
-    guesses = 8
-    if guesses < numberDifferentLetters:#calculateDifferentLetters(secretWord):
-        system("clear")
-        print '\033[33mWARNING!\033[0m'
-        print 'In the word drawn'
-        print 'The number of different letters is higher than the number of guesses'
-        print'Do you want to change the word ? [y/n]'
-        option = raw_input()
-        validateOption(option)
-        if option == 'y':
-            return 1
-        return 2
-    return 0
 
 def hangman(secretWord):
     guesses = 8
@@ -149,39 +148,39 @@ def hangman(secretWord):
         available = processLettersAvailable(lettersGuessed)
         print 'Available letters\033[33m', available,'\033[0m'
 
-        letter = raw_input('Please guess a letter: ')
+        letter = raw_input('\033[32mPlease guess a letter:\033[0m ')
         if letter in lettersGuessed:
-            string = 'Oops! You have already guessed that letter: '
+            string = '\033[32mOops! You have already guessed that letter:\033[0m '
 
             processGuess(string, lettersGuessed, secretWord)
 
         elif letter in secretWord:
             lettersGuessed.append(letter)
-            string = 'Good Guess: '
+            string = '\033[32mGood Guess:\033[0m '
 
             processGuess(string, lettersGuessed, secretWord)
 
         else:
             guesses -=1
             lettersGuessed.append(letter)
-            string = 'Oops! That letter is not in my word: '
+            string = '\033[32mOops! That letter is not in my word:\033[0m '
 
             processGuess(string, lettersGuessed, secretWord)
 
     else:
         printResult(secretWord, lettersGuessed)
 
-
 archive = Archive(WORDLIST_FILENAME)
 archive.openArchive()
 archive.readArchive()
 archive.makeListOfWords()
-archive.calculateLength()
+archive.calculateLengthOfWordlist()
 printLoadSituation(archive.length)
 word = Word()
 word.chooseWord(archive.wordlist)
 word.calculateDifferentLetters()
-while chooseAnotherWord(word.secretWord, word.numberDifferentLetters) == 1:
+while word.chooseAnotherWord() == 1:
     word.chooseWord(archive.wordlist)
+    word.calculateDifferentLetters()
 printWelcomeMessage(word.secretWord, word.numberDifferentLetters)
 hangman(word.secretWord)

@@ -4,44 +4,61 @@ import string
 import time
 from os import system
 
-WORDLIST_FILENAME = "words.txt"
+WORDLIST_FILENAME = "palavras.txt"
 
-def openArchive():
-    inFile = open(WORDLIST_FILENAME, 'r', 0)
-    return inFile
+class Archive:
+    fileName = ''
+    inFile = ''
+    line = ''
+    wordlist = ''
+    length = 0
 
-def readArchive(inFile):
-    line = inFile.readline()
-    return line
+    def __init__(self, fileName):
+        self.fileName = fileName
 
-def makeListOfWords(line):
-    """
-    Depending on the size of the word list, this function may
-    take a while to finish.
-    """
-    wordlist = string.split(line)
-    return wordlist
+    def openArchive(self):
+        self.inFile = open(self.fileName, 'r', 0)
+        return self.inFile
 
-def chooseWord(wordlist):
-    return random.choice(wordlist)
+    def readArchive(self):
+        self.line = self.inFile.readline()
 
-def printLoadSituation(wordlist):
+    def makeListOfWords(self):
+        """
+        Depending on the size of the word list, this function may
+        take a while to finish.
+        """
+        self.wordlist = string.split(self.line)
+        return self.wordlist
+
+    def calculateLength(self):
+        self.length = len(self.wordlist)
+
+class Word():
+
+    secretWord = ''
+    numberDifferentLetters = 0
+
+    def chooseWord(self, wordlist):
+        self.secretWord = random.choice(wordlist).lower()
+
+    def calculateDifferentLetters(self):
+        repetitions = set(self.secretWord)
+        self.numberDifferentLetters = len(repetitions)
+        print self.numberDifferentLetters
+
+def printLoadSituation(lenWordlist):
     print "Loading word list from file... Wait a few seconds, please"
     time.sleep(2)
-    print len(wordlist), "words loaded."
+    print lenWordlist, "words loaded."
     print "Press \033[91mENTER\033[0m to start"
     raw_input()
 
-
-def calculateDifferentLetters(secretWord):
-    repetitions = set(secretWord)
-    return len(repetitions)
-
-def printWelcomeMessage(secretWord):
+def printWelcomeMessage(secretWord, numberDifferentLetters):
     system("clear")
     print '\033[91mWelcome to the game, Hangam!\033[0m'
     print '\033[91mI am thinking of a word that is\033[33m', len(secretWord), '\033[0m\033[91mletters long.\033[0m'
-    print '\033[91mThe word has\033[33m', calculateDifferentLetters(secretWord),'\033[0m\033[91mdifferent letters.\033[0m'
+    print '\033[91mThe word has\033[33m', numberDifferentLetters,'\033[0m\033[91mdifferent letters.\033[0m'
     print '-------------'
 
 def isWordGuessed(secretWord, lettersGuessed):
@@ -107,9 +124,9 @@ def validateOption(option):
         print 'Invalid character! Try again'
         option = raw_input()
 
-def chooseAnotherWord(secretWord):
+def chooseAnotherWord(secretWord, numberDifferentLetters):
     guesses = 8
-    if guesses < calculateDifferentLetters(secretWord):
+    if guesses < numberDifferentLetters:#calculateDifferentLetters(secretWord):
         system("clear")
         print '\033[33mWARNING!\033[0m'
         print 'In the word drawn'
@@ -154,15 +171,17 @@ def hangman(secretWord):
     else:
         printResult(secretWord, lettersGuessed)
 
-# inFile: file
-inFile = openArchive()
-# line: string
-line = readArchive(inFile)
-# wordlist: list of strings
-wordlist = makeListOfWords(line)
-printLoadSituation(wordlist)
-secretWord = chooseWord(wordlist).lower()
-while chooseAnotherWord(secretWord) == 1:
-    secretWord = chooseWord(wordlist).lower()
-printWelcomeMessage(secretWord)
-hangman(secretWord)
+
+archive = Archive(WORDLIST_FILENAME)
+archive.openArchive()
+archive.readArchive()
+archive.makeListOfWords()
+archive.calculateLength()
+printLoadSituation(archive.length)
+word = Word()
+word.chooseWord(archive.wordlist)
+word.calculateDifferentLetters()
+while chooseAnotherWord(word.secretWord, word.numberDifferentLetters) == 1:
+    word.chooseWord(archive.wordlist)
+printWelcomeMessage(word.secretWord, word.numberDifferentLetters)
+hangman(word.secretWord)

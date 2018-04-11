@@ -1,5 +1,6 @@
 import string
 import random
+from os import system
 
 class Word():
 

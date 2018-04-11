@@ -16,11 +16,16 @@ class Hangman:
 
         return True
 
-    def getGuessedWord(self):
+    def getGuessedWord(self, string):
+        guessed = ''
+        for letter in self.secretWord:
+            if letter in self.lettersGuessed:
+                guessed += letter
+            else:
+                guessed += ' _ '
+        print string, guessed
+        print '====================================================================='
 
-         guessed = ''
-
-         return guessed
 
     def getAvailableLetters(self):
         # 'abcdefghijklmnopqrstuvwxyz'
@@ -33,16 +38,6 @@ class Hangman:
             if letter in self.lettersGuessed:
                 available = available.replace(letter, '')
         return available
-
-    def processGuess(self, string):
-        guessed = self.getGuessedWord()
-        for letter in self.secretWord:
-            if letter in self.lettersGuessed:
-                guessed += letter
-            else:
-                guessed += ' _ '
-        print string, guessed
-        print '====================================================================='
 
     def printResult(self):
         system("clear")
@@ -71,20 +66,20 @@ class Hangman:
             if letter in self.lettersGuessed:
                 string = '\033[32mOops! You have already guessed that letter:\033[0m '
 
-                self.processGuess(string)
+                self.getGuessedWord(string)
 
             elif letter in self.secretWord:
                 self.lettersGuessed.append(letter)
                 string = '\033[32mGood Guess:\033[0m '
 
-                self.processGuess(string)
+                self.getGuessedWord(string)
 
             else:
                 guesses -=1
                 self.lettersGuessed.append(letter)
                 string = '\033[32mOops! That letter is not in my word:\033[0m '
 
-                self.processGuess(string)
+                self.getGuessedWord(string)
 
         else:
             self.printResult()

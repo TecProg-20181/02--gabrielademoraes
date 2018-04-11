@@ -37,7 +37,7 @@ def Main():
     word.chooseWord(word.wordlist)
     word.calculateDifferentLetters()
     while word.chooseAnotherWord() == 1:
-        word.chooseWord(archive.wordlist)
+        word.chooseWord(word.wordlist)
         word.calculateDifferentLetters()
     printWelcomeMessage(word.secretWord, word.numberDifferentLetters)
     game = Hangman(word.getSecretWord())

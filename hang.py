@@ -26,7 +26,7 @@ def printWelcomeMessage(secretWord, numberDifferentLetters):
     time.sleep(1)
     print '1'
 
-def Main():
+def main():
     word = Word(WORDLIST_FILENAME)
     word.openArchive()
     word.readArchive()
@@ -42,4 +42,4 @@ def Main():
     game = Hangman(word.getSecretWord())
     game.hangman()
 
-Main()
+main()

@@ -22,8 +22,8 @@ class Word():
         self.secretWord = random.choice(wordlist).lower()
 
     def calculateDifferentLetters(self):
-        repetitions = set(self.secretWord)
-        self.numberDifferentLetters = len(repetitions)
+        differentLetters = set(self.secretWord)
+        self.numberDifferentLetters = len(differentLetters)
 
     def chooseAnotherWord(self):
         guesses = 8

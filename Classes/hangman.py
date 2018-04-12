@@ -24,7 +24,6 @@ class Hangman:
         print string, guessed
         print '====================================================================='
 
-
     def getAvailableLetters(self):
         # 'abcdefghijklmnopqrstuvwxyz'
         available = string.ascii_lowercase

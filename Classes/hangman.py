@@ -7,13 +7,11 @@ class Hangman:
         self.lettersGuessed = []
 
     def isWordGuessed(self):
-
         for letter in self.secretWord:
             if letter in self.lettersGuessed:
                 pass
             else:
                 return False
-
         return True
 
     def getGuessedWord(self, string):

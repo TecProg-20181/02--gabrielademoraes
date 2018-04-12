@@ -6,7 +6,6 @@ from Classes.hangman import Hangman
 
 WORDLIST_FILENAME = "words.txt"
 
-
 def printLoadSituation(lenWordlist):
     print "Loading word list from file... Wait a few seconds, please"
     time.sleep(2)

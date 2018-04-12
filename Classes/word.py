@@ -3,16 +3,6 @@ import random
 from os import system
 
 class Word():
-
-    secretWord = ''
-    numberDifferentLetters = 0
-    option = ''
-    fileName = ''
-    inFile = ''
-    line = ''
-    wordlist = ''
-    length = 0
-
     def __init__(self, fileName):
         self.fileName = fileName
 
@@ -23,10 +13,6 @@ class Word():
         self.line = self.inFile.readline()
 
     def makeListOfWords(self):
-        """
-        Depending on the size of the word list, this function may
-        take a while to finish.
-        """
         self.wordlist = string.split(self.line)
 
     def calculateLengthOfWordlist(self):
@@ -52,8 +38,6 @@ class Word():
             self.validateOption()
             if self.option == 'y':
                 return 1
-            return 2
-        return 0
 
     def validateOption(self):
         while self.option != 'y' and self.option != 'n':
@@ -61,4 +45,4 @@ class Word():
             self.option = raw_input()
 
     def getSecretWord(self):
-            return self.secretWord
+        return self.secretWord
